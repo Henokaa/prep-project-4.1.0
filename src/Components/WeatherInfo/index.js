@@ -15,6 +15,20 @@ const getTime = (timeStamp) => {
   ).getMinutes()}`;
 };
 
+const getLocalTime = (timezone_offset) => {
+  var currDate = new Date();
+  var offsetHours = Math.floor(timezone_offset / 3600);
+  var offsetMinutes = (timezone_offset / 60) - (offsetHours * 60);
+  currDate.setHours(currDate.getUTCHours() + (offsetHours));
+  currDate.setMinutes(currDate.getUTCMinutes() + (offsetMinutes));
+  var hours = currDate.getHours();
+  var AmOrPm = hours >= 12 ? 'pm' : 'am';
+  hours = "0" + (hours % 12) || 12;
+  var minutes = "0" + currDate.getMinutes() ;
+  var finalTime = "Local Time: " + hours.substr(-2) + ":" + minutes.substr(-2) + " " + AmOrPm; 
+  return finalTime;
+};
+
 const WeatherInfo = (props) => {
   const { data } = props;
   const icon = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
@@ -25,7 +39,10 @@ const WeatherInfo = (props) => {
     <div class="grid-container">
       <div class="top-row">
         <div class="grid-item item1">
-          <b>{data.name}</b>, {data.sys.country}
+          <b>{data.name}</b>, {data.sys.country}<br/>
+          <div class="grid-item">
+            {getLocalTime(data.timezone)}
+          </div>
         </div>
         <div class="grid-item item2">
           <div className="temperature-info">
